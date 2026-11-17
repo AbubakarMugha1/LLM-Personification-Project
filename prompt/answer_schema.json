@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "label",
+    "categories",
+    "rationale"
+  ],
+  "properties": {
+    "label": {
+      "type": "string",
+      "enum": [
+        "Inappropriate",
+        "Child-directed",
+        "Irrelevant"
+      ]
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rationale": {
+      "type": "string"
+    }
+  }
+}

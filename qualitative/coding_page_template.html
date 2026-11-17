@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MFK Ad Coding</title>
+<style>
+:root { --bg:#f6f6f4; --panel:#fff; --ink:#1d1d1b; --muted:#6b6b66; --rule:#deded8; --accent:#2a78d6; --accent-soft:#e6f0fb;
+  --mm:#b4541b; --mm-soft:#fbeee6; --ok:#2f7d4f; --warn:#a36a00; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#161615; --panel:#20201e; --ink:#ecece8; --muted:#a3a39c;
+  --rule:#383834; --accent:#6aa5ee; --accent-soft:#1f2c3d; --mm:#f0935a; --mm-soft:#35251b; --ok:#6cc08f; --warn:#e0a640; } }
+:root[data-theme="dark"] { --bg:#161615; --panel:#20201e; --ink:#ecece8; --muted:#a3a39c; --rule:#383834; --accent:#6aa5ee;
+  --accent-soft:#1f2c3d; --mm:#f0935a; --mm-soft:#35251b; --ok:#6cc08f; --warn:#e0a640; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { position:sticky; top:0; z-index:5; display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; padding:10px 16px;
+  background:var(--panel); border-bottom:1px solid var(--rule); }
+header h1 { font-size:15px; margin:0 8px 0 0; }
+button, input[type=text] { font:inherit; color:var(--ink); }
+button { padding:5px 10px; border:1px solid var(--rule); border-radius:6px; background:var(--panel); cursor:pointer; }
+button:hover { border-color:var(--accent); } button.primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+input[type=text], textarea, select { padding:5px 8px; border:1px solid var(--rule); border-radius:6px; background:var(--panel); color:var(--ink); font:inherit; }
+textarea { width:100%; min-height:48px; resize:vertical; }
+.note { color:var(--muted); font-size:12.5px; }
+.layout { display:grid; grid-template-columns:265px 1fr; gap:16px; padding:16px; max-width:1500px; margin:0 auto; }
+@media (max-width:820px) { .layout { grid-template-columns:1fr; } nav { order:2; } }
+nav { background:var(--panel); border:1px solid var(--rule); border-radius:8px; padding:8px; align-self:start; position:sticky; top:64px; }
+nav a { display:flex; justify-content:space-between; gap:6px; padding:6px 8px; border-radius:6px; color:var(--ink); text-decoration:none; font-size:13px; }
+nav a.cur { background:var(--accent-soft); } nav a > span:first-child { white-space:nowrap; } nav a .st { color:var(--muted); font-size:11.5px; white-space:nowrap; }
+nav a .st.done { color:var(--ok); font-weight:600; }
+.card { background:var(--panel); border:1px solid var(--rule); border-radius:8px; padding:12px 14px; margin-bottom:14px; }
+.card h2 { font-size:15px; margin:0 0 8px; } .card h3 { font-size:14px; margin:0 0 6px; }
+.top { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:14px; }
+@media (max-width:1100px) { .top { grid-template-columns:1fr; } }
+video { width:100%; max-height:420px; background:#000; border-radius:6px; }
+.q { margin:8px 0 10px; } .qt { font-weight:600; margin-bottom:4px; }
+.opts { display:flex; flex-wrap:wrap; gap:6px; }
+.opt { display:inline-flex; align-items:center; gap:5px; padding:4px 9px; border:1px solid var(--rule); border-radius:999px; cursor:pointer; font-size:13px; user-select:none; }
+.opt input { margin:0; } .opt:has(input:checked) { background:var(--accent-soft); border-color:var(--accent); }
+.opt[title] { text-decoration: underline dotted var(--muted); text-underline-offset:3px; }
+.rat { border-top:1px solid var(--rule); padding:10px 0; } .rat:first-of-type { border-top:0; }
+.rat .who { display:flex; flex-wrap:wrap; gap:6px; align-items:baseline; margin-bottom:4px; }
+.tag { font-size:11.5px; padding:1px 7px; border-radius:999px; border:1px solid var(--rule); color:var(--muted); }
+.tag.mm { color:var(--mm); border-color:var(--mm); } .tag.inapp { background:var(--mm-soft); color:var(--mm); border-color:var(--mm); }
+.why { margin:2px 0 6px; } .cats { font-size:12.5px; color:var(--mm); margin-bottom:4px; }
+.coded { color:var(--ok); font-size:12px; } .todo { color:var(--warn); font-size:12px; }
+.row { display:flex; flex-wrap:wrap; gap:10px 18px; align-items:flex-start; }
+.grp { font-size:12px; color:var(--muted); margin:2px 0 3px; }
+details > summary { cursor:pointer; font-weight:600; }
+.navbtns { display:flex; justify-content:space-between; margin:4px 0 30px; }
+table { border-collapse:collapse; width:100%; font-size:13px; } th, td { border-bottom:1px solid var(--rule); padding:5px 8px; text-align:left; vertical-align:top; }
+th { color:var(--muted); font-weight:600; } td.n { text-align:right; font-variant-numeric:tabular-nums; }
+.defs dt { font-weight:600; margin-top:6px; } .defs dd { margin:0 0 0 12px; color:var(--muted); }
+.hidden { display:none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>MFK ad coding: 11 ads</h1>
+  <label>Coder <input id="coder" type="text" size="12" placeholder="your name"></label>
+  <button id="dirBtn">Choose videos folder</button><input id="dirFile" type="file" webkitdirectory multiple hidden>
+  <span id="dirDone" class="note"></span>
+  <span style="flex:1"></span>
+  <button id="viewBtn">Summary</button>
+  <button id="defsBtn">Codebook</button>
+  <button id="impBtn">Import CSV</button><input id="impFile" type="file" accept=".csv" hidden>
+  <button id="expBtn" class="primary">Export CSV</button>
+</header>
+<div class="layout">
+  <nav id="nav"></nav>
+  <main id="main"></main>
+</div>
+<script>
+const ADS = __DATA__;
+
+// ---------- codebook ----------
+const CB = {
+  A_format: {q: "A-format", type: "one", opts: [["music", "Music video"], ["product", "Product ad"], ["other", "Other"]]},
+  A_content: {q: "A-content (any that apply)", type: "many", opts: [
+    ["A1", "A1 Revealing clothing", "Swimwear, lingerie, low-cut, short or tight outfits, exposed midriff"],
+    ["A2", "A2 Body-focused posing/dancing/camera", "Posing, dancing or camera work that emphasises the body"],
+    ["A3", "A3 Kissing or intimate contact", "Kissing, close embraces, caressing"],
+    ["A4", "A4 Nightlife or party setting", "Nightclub, party, drinking scenes"],
+    ["A5", "A5 Romantic theme only", "Romance in lyrics or story, without physical intimacy shown"],
+    ["A6", "A6 None of these", ""]]},
+  A_intensity: {q: "A-intensity", type: "one", opts: [
+    ["mild", "Mild", "Outfits and scenes common in mainstream media"],
+    ["moderate", "Moderate", "Repeated emphasis on the body or intimacy"],
+    ["strong", "Strong", "Near-nudity or sexual activity"]]},
+  B_focus: {q: "B-focus: what the rationale objects to", type: "many", opts: [
+    ["B1", "B1 Clothing or exposure"], ["B2", "B2 Body-focused posing/dancing/camera"], ["B3", "B3 Kissing or intimacy"],
+    ["B4", "B4 Adult setting (nightlife, party)"], ["B5", "B5 The romantic theme itself"]]},
+  B_frame: {q: "B-frame: how it argues", type: "many", opts: [
+    ["B6", "B6 Sexualising terms", "e.g. sexualized, sensual, suggestive, immodest"],
+    ["B7", "B7 Audience mismatch", "e.g. adult-oriented, aimed at adults rather than children"],
+    ["B8", "B8 Names the country or its culture", "e.g. 'in Saudi Arabia', 'Iranian cultural context'"],
+    ["B9", "B9 Religion", "Mentions religion or religious values"]]},
+  B_acc: {q: "B-accuracy (against what you coded in A)", type: "one", opts: [
+    ["accurate", "Accurate"], ["overstated", "Overstated", "Content is present but described as stronger than it is"],
+    ["misdescribed", "Misdescribed", "Describes content that is not in the ad"]]},
+  C_mention: {q: "C-mention: the content you coded in A", type: "one", opts: [
+    ["C1", "C1 Named and accepted", "Names it but judges it fine, e.g. 'revealing but non-explicit'"],
+    ["C2", "C2 Neutral terms", "Describes it neutrally, e.g. 'fashionable', 'glamorous', 'romantic imagery'"],
+    ["C3", "C3 Not mentioned", ""]]},
+  C4: {q: "C4", type: "flag", opts: [["yes", "C4 Explicitness as the bar", "e.g. 'no explicit content', 'not overtly sexual'"]]},
+  D1: {q: "D1: YouTube MFK ad guidelines category that names this content (optional)", type: "one", opts: [
+    ["romantic", "Romantic Content"], ["skin", "Significant Skin Exposure"], ["sexual", "Adult / Sexually Suggestive"],
+    ["none", "None"], ["unsure", "Unsure"]]},
+};
+
+// ---------- storage ----------
+const coder = () => document.getElementById("coder").value.trim() || "anonymous";
+const KEY = () => "mfk-qual11:" + coder();
+let S = {}; // S[ad] = {A:{format,content:[],intensity}, B:{country:{focus:[],frame:[],acc}}, C:{country:{mention,C4}}, M:{...}, D1, notes, revealed, updated}
+function load() { try { S = JSON.parse(localStorage.getItem(KEY()) || "{}"); } catch (e) { S = {}; } }
+function persist() { try { localStorage.setItem(KEY(), JSON.stringify(S)); localStorage.setItem("mfk-qual11:last", coder()); } catch (e) {} }
+try { document.getElementById("coder").value = localStorage.getItem("mfk-qual11:last") || ""; } catch (e) {}
+load();
+document.getElementById("coder").onchange = () => { load(); render(); };
+const st = a => (S[a] ||= {A: {content: []}, B: {}, C: {}, M: {}});
+
+// ---------- helpers ----------
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const B_units = ad => ad.rats.filter(r => r.mm && r.label === "Inappropriate");
+const C_units = ad => ad.rats.filter(r => !r.mm);
+const M_units = ad => ad.rats.filter(r => r.mm && r.label !== "Inappropriate");
+const aDone = x => x.A.format && x.A.intensity && x.A.content.length;
+const bDone = u => u && u.focus?.length && u.acc;
+const cDone = u => u && u.mention;
+function progress(ad) {
+  const x = st(ad.ad_id);
+  const b = B_units(ad).filter(r => bDone(x.B[r.country])).length, c = C_units(ad).filter(r => cDone(x.C[r.country])).length;
+  return {a: !!aDone(x), b, nb: B_units(ad).length, c, nc: C_units(ad).length,
+          done: aDone(x) && b === B_units(ad).length && c === C_units(ad).length};
+}
+function control(name, key, cur, field) { // cur: current value(s); field: data-path
+  const d = CB[key], uid = name + "_" + key;
+  const opts = d.opts.map(([v, lab, tip]) => {
+    const t = d.type === "many" ? "checkbox" : d.type === "flag" ? "checkbox" : "radio";
+    const on = d.type === "many" ? (cur || []).includes(v) : d.type === "flag" ? cur === "yes" : cur === v;
+    return `<label class="opt"${tip ? ` title="${esc(tip)}"` : ""}><input type="${t}" name="${esc(uid)}" value="${v}" data-f="${esc(field)}" data-k="${key}" ${on ? "checked" : ""}>${esc(lab)}</label>`;
+  }).join("");
+  return `<div class="q">${d.type === "flag" ? "" : `<div class="qt">${esc(d.q)}</div>`}<div class="opts">${opts}</div></div>`;
+}
+
+// ---------- rendering ----------
+let cur = 0, view = "ad", vids = new Map();
+function nav() {
+  document.getElementById("nav").innerHTML = ADS.map((ad, i) => {
+    const p = progress(ad);
+    const s = p.done ? `<span class="st done">done</span>` : `<span class="st">A${p.a ? "✓" : "·"} B ${p.b}/${p.nb} C ${p.c}/${p.nc}</span>`;
+    return `<a href="#" data-i="${i}" class="${i === cur && view === "ad" ? "cur" : ""}"><span>${i + 1}. ${esc(ad.ad_id)}</span>${s}</a>`;
+  }).join("") + `<p class="note" style="padding:6px 8px 0">Answers save in this browser for the coder name above. Export to keep a copy.</p>`;
+  document.querySelectorAll("nav a[data-i]").forEach(el => el.onclick = e => { e.preventDefault(); cur = +el.dataset.i; view = "ad"; render(); scrollTo(0, 0); });
+}
+function ratHTML(ad, r, kind) {
+  const x = st(ad.ad_id), u = (kind === "B" ? x.B : kind === "C" ? x.C : x.M)[r.country] || {};
+  const done = kind === "B" ? bDone(u) : cDone(u);
+  const f = `${kind}|${r.country}`;
+  const codes = kind === "B"
+    ? control(f, "B_focus", u.focus, f + "|focus") + control(f, "B_frame", u.frame, f + "|frame") + control(f, "B_acc", u.acc, f + "|acc")
+    : `<div class="row">${control(f, "C_mention", u.mention, f + "|mention")}${control(f, "C4", u.C4, f + "|C4")}</div>`;
+  return `<div class="rat"><div class="who"><b>${esc(r.country)}</b>${r.mm ? `<span class="tag mm">Muslim-majority</span>` : ""}
+    <span class="tag ${r.label === "Inappropriate" ? "inapp" : ""}">${esc(r.label)}</span><span class="tag">${r.set === "held-out" ? "held-out set" : "original set"}</span>
+    <span class="${done ? "coded" : "todo"}">${done ? "coded" : "to code"}</span></div>
+    ${r.cats.length ? `<div class="cats">Concerns: ${esc(r.cats.join("; "))}</div>` : ""}
+    <div class="why">${esc(r.why)}</div>${codes}</div>`;
+}
+function adView() {
+  const ad = ADS[cur], x = st(ad.ad_id), p = progress(ad);
+  const file = vids.get(ad.video_file.toLowerCase());
+  const video = file ? `<video controls preload="metadata" src="${URL.createObjectURL(file)}"></video>`
+    : `<p class="note">Choose the videos folder (the unzipped <b>mm_romance_videos</b>) to play the ad here, or open it on <a href="${esc(ad.youtube)}" target="_blank" rel="noopener">YouTube</a>.</p>`;
+  const B = B_units(ad), C = C_units(ad), M = M_units(ad);
+  return `
+  <div class="top">
+    <div class="card"><h2>${cur + 1} of ${ADS.length}: ${esc(ad.ad_id)}</h2>${video}
+      <p class="note" style="margin:6px 0 0"><a href="${esc(ad.youtube)}" target="_blank" rel="noopener">Open on YouTube</a>${x.revealed ? ` · flagged by ${B.length} of 11 Muslim-majority personas, 0 of 13 others` : ""}</p></div>
+    <div class="card"><h2>A. Ad content</h2><p class="note">Watch the ad twice, with sound, and code A before revealing the rationales.</p>
+      ${control("A", "A_format", x.A.format, "A||format")}${control("A", "A_content", x.A.content, "A||content")}${control("A", "A_intensity", x.A.intensity, "A||intensity")}
+      <div class="q"><div class="qt">Description (2-3 neutral sentences) and notes</div><textarea data-notes>${esc(x.notes || "")}</textarea></div></div>
+  </div>
+  ${x.revealed ? `
+  <div class="card"><h2>B. Muslim-majority personas that flag the ad (${p.b}/${p.nb} coded)</h2>${B.map(r => ratHTML(ad, r, "B")).join("")}</div>
+  <div class="card"><h2>C. Other personas (${p.c}/${p.nc} coded)</h2><p class="note">C-mention refers to the content you coded in A.</p>${C.map(r => ratHTML(ad, r, "C")).join("")}</div>
+  <div class="card"><details><summary>Optional: Muslim-majority personas that did not flag the ad (${M.length}), coded like C</summary>${M.map(r => ratHTML(ad, r, "M")).join("")}</details></div>
+  <div class="card"><h2>D. Guidelines (optional)</h2>${control("D", "D1", x.D1, "D||D1")}</div>`
+  : `<div class="card"><p>Rationales are hidden until you have coded A.</p><button id="reveal" class="primary" ${aDone(x) ? "" : "disabled"}>Reveal rationales</button>
+     ${aDone(x) ? "" : `<span class="note"> Code A-format, A-content and A-intensity first.</span>`}</div>`}
+  <div class="navbtns"><button id="prev" ${cur ? "" : "disabled"}>← Previous ad</button><button id="next" ${cur < ADS.length - 1 ? "" : "disabled"}>Next ad →</button></div>`;
+}
+function share(units, test) { const coded = units.filter(Boolean); return [coded.filter(test).length, coded.length]; }
+function summaryView() {
+  const Bs = [], Cs = [], Ms = [];
+  ADS.forEach(ad => { const x = st(ad.ad_id);
+    B_units(ad).forEach(r => bDone(x.B[r.country]) && Bs.push(x.B[r.country]));
+    C_units(ad).forEach(r => cDone(x.C[r.country]) && Cs.push(x.C[r.country]));
+    M_units(ad).forEach(r => cDone(x.M[r.country]) && Ms.push(x.M[r.country])); });
+  const pct = (k, n) => n ? `${k}/${n} (${Math.round(100 * k / n)}%)` : "–";
+  const rowsB = [...CB.B_focus.opts, ...CB.B_frame.opts].map(([v, lab]) => {
+    const k = Bs.filter(u => (u.focus || []).includes(v) || (u.frame || []).includes(v)).length;
+    return `<tr><td>${esc(lab)}</td><td class="n">${pct(k, Bs.length)}</td></tr>`; }).join("")
+    + CB.B_acc.opts.map(([v, lab]) => `<tr><td>Accuracy: ${esc(lab)}</td><td class="n">${pct(Bs.filter(u => u.acc === v).length, Bs.length)}</td></tr>`).join("");
+  const rowC = (lab, t) => `<tr><td>${esc(lab)}</td><td class="n">${pct(Cs.filter(t).length, Cs.length)}</td><td class="n">${pct(Ms.filter(t).length, Ms.length)}</td></tr>`;
+  const rowsC = CB.C_mention.opts.map(([v, lab]) => rowC(lab, u => u.mention === v)).join("") + rowC("C4 Explicitness as the bar", u => u.C4 === "yes");
+  const lab = (key, v) => (CB[key].opts.find(o => o[0] === v) || [, ""])[1];
+  const matrix = ADS.map((ad, i) => { const x = st(ad.ad_id);
+    return `<tr><td>${i + 1}. ${esc(ad.ad_id)}</td><td>${esc(lab("A_format", x.A.format))}</td><td>${esc((x.A.content || []).join(", "))}</td>
+      <td>${esc(lab("A_intensity", x.A.intensity))}</td><td class="n">${B_units(ad).length}</td><td>${esc(lab("D1", x.D1))}</td></tr>`; }).join("");
+  return `<div class="card"><h2>A. Ads</h2><table><tr><th>Ad</th><th>Format</th><th>Content</th><th>Intensity</th><th>MM flags</th><th>D1</th></tr>${matrix}</table></div>
+  <div class="top"><div class="card"><h2>B. Muslim-majority rationales that flag (${Bs.length} coded of 49)</h2><table><tr><th>Code</th><th>Share</th></tr>${rowsB}</table></div>
+  <div class="card"><h2>C. Rationales that do not flag</h2><table><tr><th>Code</th><th>Other personas (${Cs.length} of 143)</th><th>MM, not flagged (${Ms.length})</th></tr>${rowsC}</table></div></div>`;
+}
+function defsView() {
+  const sec = (t, keys) => `<h3 style="margin-top:12px">${t}</h3><dl class="defs">${keys.flatMap(k => CB[k].opts.map(([v, lab, tip]) => `<dt>${esc(lab)}</dt><dd>${esc(tip || "")}</dd>`)).join("")}</dl>`;
+  return `<div class="card"><h2>Codebook</h2>
+  <p class="note">Units: A and D per ad; B per Muslim-majority rationale that flags the ad (49); C per other persona's rationale (143). Code A from the video before reading any rationale. B-accuracy and C-mention are judged against your A codes.</p>
+  ${sec("A. Ad content", ["A_format", "A_content", "A_intensity"])}${sec("B. Muslim-majority rationale that flags", ["B_focus", "B_frame", "B_acc"])}
+  ${sec("C. Other personas", ["C_mention", "C4"])}${sec("D. Guidelines (optional)", ["D1"])}
+  <p class="note">E (exposure) is computed from the countries file, not coded here.</p></div>`;
+}
+function render() {
+  nav();
+  document.getElementById("viewBtn").textContent = view === "summary" ? "Back to coding" : "Summary";
+  document.getElementById("defsBtn").textContent = view === "defs" ? "Back to coding" : "Codebook";
+  const m = document.getElementById("main");
+  m.innerHTML = view === "summary" ? summaryView() : view === "defs" ? defsView() : adView();
+  if (view !== "ad") return;
+  const ad = ADS[cur], x = st(ad.ad_id);
+  m.querySelectorAll("input[data-f]").forEach(el => el.onchange = () => {
+    const [kind, country, field] = el.dataset.f.split("|"), d = CB[el.dataset.k];
+    const tgt = kind === "A" ? x.A : kind === "D" ? x : ((x[kind] ||= {})[country] ||= {});
+    if (d.type === "many") { const s = new Set(tgt[field] || []); el.checked ? s.add(el.value) : s.delete(el.value); tgt[field] = [...s].sort(); }
+    else if (d.type === "flag") tgt[field] = el.checked ? "yes" : "";
+    else tgt[field] = el.value;
+    x.updated = new Date().toISOString(); persist();
+    const rat = el.closest(".rat");
+    if (rat) { const ok = kind === "B" ? bDone(tgt) : cDone(tgt); const s = rat.querySelector(".coded,.todo"); s.className = ok ? "coded" : "todo"; s.textContent = ok ? "coded" : "to code"; }
+    if (kind === "A" && !x.revealed) { const b = document.getElementById("reveal"); if (b) b.disabled = !aDone(x); }
+    nav();
+  });
+  const ta = m.querySelector("textarea[data-notes]"); ta.oninput = () => { x.notes = ta.value; x.updated = new Date().toISOString(); persist(); };
+  const rv = document.getElementById("reveal"); if (rv) rv.onclick = () => { x.revealed = true; persist(); render(); };
+  document.getElementById("prev").onclick = () => { cur--; render(); scrollTo(0, 0); };
+  document.getElementById("next").onclick = () => { cur++; render(); scrollTo(0, 0); };
+}
+document.getElementById("viewBtn").onclick = () => { view = view === "summary" ? "ad" : "summary"; render(); };
+document.getElementById("defsBtn").onclick = () => { view = view === "defs" ? "ad" : "defs"; render(); };
+document.getElementById("dirBtn").onclick = () => document.getElementById("dirFile").click();
+document.getElementById("dirFile").onchange = e => {
+  vids = new Map([...e.target.files].filter(f => /\.(mp4|webm|mkv)$/i.test(f.name)).map(f => [f.name.toLowerCase(), f]));
+  const n = ADS.filter(a => vids.has(a.video_file.toLowerCase())).length;
+  document.getElementById("dirDone").textContent = `${n} of ${ADS.length} videos found`; render();
+};
+
+// ---------- CSV export / import ----------
+const COLS = ["coder", "ad_id", "unit", "country", "persona_set", "label", "A_format", "A1", "A2", "A3", "A4", "A5", "A6", "A_intensity",
+  "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B_accuracy", "C_mention", "C4", "D1", "notes", "updated"];
+const cell = v => { v = String(v ?? ""); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+document.getElementById("expBtn").onclick = () => {
+  const rows = [COLS.join(",")];
+  ADS.forEach(ad => { const x = st(ad.ad_id), base = {coder: coder(), ad_id: ad.ad_id};
+    const a = {...base, unit: "ad", A_format: x.A.format, A_intensity: x.A.intensity, D1: x.D1, notes: x.notes, updated: x.updated};
+    ["A1", "A2", "A3", "A4", "A5", "A6"].forEach(k => a[k] = (x.A.content || []).includes(k) ? 1 : 0);
+    rows.push(COLS.map(c => cell(a[c])).join(","));
+    [["B", B_units(ad)], ["C", C_units(ad)], ["M", M_units(ad)]].forEach(([kind, us]) => us.forEach(r => {
+      const u = (x[kind] || {})[r.country] || {}, o = {...base, unit: kind === "M" ? "C_mm_not_flagged" : kind, country: r.country, persona_set: r.set, label: r.label};
+      if (kind === "B") { ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9"].forEach(k => o[k] = (u.focus || []).includes(k) || (u.frame || []).includes(k) ? 1 : 0); o.B_accuracy = u.acc; }
+      else { o.C_mention = u.mention; o.C4 = u.C4 === "yes" ? 1 : 0; }
+      rows.push(COLS.map(c => cell(o[c])).join(","));
+    })); });
+  const url = URL.createObjectURL(new Blob([rows.join("\n")], {type: "text/csv"}));
+  Object.assign(document.createElement("a"), {href: url, download: `qual11_codes_${coder()}_${new Date().toISOString().slice(0, 10)}.csv`}).click();
+};
+function parseCSV(t) {
+  const out = []; let row = [], f = "", q = false;
+  for (let i = 0; i < t.length; i++) { const c = t[i];
+    if (q) { if (c === '"') { if (t[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true; else if (c === ",") { row.push(f); f = ""; } else if (c === "\n" || c === "\r") { if (c === "\r" && t[i + 1] === "\n") i++; row.push(f); out.push(row); row = []; f = ""; }
+    else f += c; }
+  if (f || row.length) { row.push(f); out.push(row); }
+  const h = out.shift() || []; return out.filter(r => r.length > 1).map(r => Object.fromEntries(h.map((k, i) => [k, r[i] ?? ""])));
+}
+document.getElementById("impBtn").onclick = () => document.getElementById("impFile").click();
+document.getElementById("impFile").onchange = async e => {
+  const rows = parseCSV(await e.target.files[0].text()); let n = 0;
+  rows.forEach(r => { if (!ADS.some(a => a.ad_id === r.ad_id)) return; const x = st(r.ad_id); n++;
+    if (r.unit === "ad") { x.A = {format: r.A_format, intensity: r.A_intensity, content: ["A1", "A2", "A3", "A4", "A5", "A6"].filter(k => r[k] === "1")};
+      x.D1 = r.D1; x.notes = r.notes; x.updated = r.updated; if (aDone(x)) x.revealed = true; }
+    else if (r.unit === "B") (x.B ||= {})[r.country] = {focus: ["B1", "B2", "B3", "B4", "B5"].filter(k => r[k] === "1"), frame: ["B6", "B7", "B8", "B9"].filter(k => r[k] === "1"), acc: r.B_accuracy};
+    else { const kind = r.unit === "C" ? "C" : "M"; (x[kind] ||= {})[r.country] = {mention: r.C_mention, C4: r.C4 === "1" ? "yes" : ""}; } });
+  persist(); render(); alert(`Imported ${n} rows for coder "${coder()}".`); e.target.value = "";
+};
+render();
+</script>
+</body>
+</html>
